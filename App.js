@@ -1,7 +1,9 @@
 import * as React from "react";
-import { View, Text,Button } from "react-native";
+import { View, Text, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 //Screens
 import HomeScreen from "./src/screens/Home";
@@ -9,50 +11,62 @@ import UsersScreen from "./src/screens/Users";
 import UserDetail from "./src/screens/UserDetail/UserDetail";
 import HeaderLogo from "./src/components/HeaderStyle";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const HomeStack = createNativeStackNavigator();
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen name="Home" component={HomeScreen} />
+    </HomeStack.Navigator>
+  );
+}
+
+const UsersStack = createNativeStackNavigator();
+
+function UsersStackScreen() {
+  return (
+    <UsersStack.Navigator>
+      <UsersStack.Screen name="Users" component={UsersScreen} />
+      <UsersStack.Screen name="UserDetail" component={UserDetail} />
+    </UsersStack.Navigator>
+  );
+}
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "black",
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = "home";
+            } else if (route.name === "Users") {
+              iconName = "people";
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
           },
-          headerTintColor: "white",
-          headerTitleStyle: {
-            fontSize: 32,
-            fontWeight: "bold",
-          },
-        }}
+          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "gray",
+        })}
       >
-        <Stack.Screen
+        <Tab.Screen
           name="Home"
-          component={HomeScreen}
-          options={{
-            title: "Anasayfa",
-            headerTitle: (props) => <HeaderLogo {...props} />,
-            headerRight: () => (
-              <Button title="Update count" />
-            )
-          }}
+          component={HomeStackScreen}
+          options={{ title: "Home" }}
         />
-
-        <Stack.Screen
+        <Tab.Screen
           name="Users"
-          component={UsersScreen}
-          options={{
-            title: "Kullanıcılar",
-          }}
+          component={UsersStackScreen}
+          options={{ title: "Users" }}
         />
-
-        <Stack.Screen
-          name="UserDetail"
-          component={UserDetail}
-          options={({ route }) => ({ title: route.params.name })}
-        />
-      </Stack.Navigator>
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
