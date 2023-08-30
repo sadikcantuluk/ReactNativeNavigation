@@ -1,8 +1,8 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-native";
 import DataText from "./DataText";
-
+import Loading from "../../components/Loading";
 
 const data = [
   {
@@ -28,12 +28,24 @@ const data = [
 ];
 
 const UsersScreen = ({ navigation }) => {
-  return (
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <DataText item={item} />}
-      ></FlatList>
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return loading ? 
+  (<Loading text={"Yükleniyor..."}/>) : 
+  (
+    <FlatList
+      data={users}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <DataText item={item} />}
+    ></FlatList>
   );
 };
 
