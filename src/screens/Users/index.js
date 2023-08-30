@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "react-native";
 import DataText from "./DataText";
 import Loading from "../../components/Loading";
+import axios from "axios";
 
 const data = [
   {
@@ -32,9 +33,8 @@ const UsersScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
+    axios("https://jsonplaceholder.typicode.com/users")
+      .then((res) => setUsers(res.data))
       .finally(() => setLoading(false));
   }, []);
 
