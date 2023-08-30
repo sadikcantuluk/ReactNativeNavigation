@@ -2,6 +2,7 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import Loading from "../../components/Loading";
 import axios from "axios";
+import Error from "../../components/Error";
 
 const UserDetail = ({ route, navigation }) => {
   const data = route.params;
@@ -9,10 +10,12 @@ const UserDetail = ({ route, navigation }) => {
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(data.id);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     axios(`https://jsonplaceholder.typicode.com/users/${userId}`)
       .then((res) => setUser(res.data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [userId]);
 
@@ -29,9 +32,15 @@ const UserDetail = ({ route, navigation }) => {
     });
   }, [navigation]);
 
-  return loading ? (
-    <Loading text={"Kullanıcı Yükleniyor..."} />
-  ) : (
+  if (loading) {
+    return <Loading text={"Kullanıcı Yükleniyor..."} />;
+  }
+
+  if (error) {
+    return <Error message={error} />;
+  }
+
+  return (
     <View>
       <Text style={styles.text}>Id : {user.id}</Text>
       <Text style={styles.text}>Ad : {user.name}</Text>

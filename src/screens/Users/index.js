@@ -4,6 +4,7 @@ import { Button } from "react-native";
 import DataText from "./DataText";
 import Loading from "../../components/Loading";
 import axios from "axios";
+import Error from "../../components/Error";
 
 const data = [
   {
@@ -31,16 +32,24 @@ const data = [
 const UsersScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     axios("https://jsonplaceholder.typicode.com/users")
       .then((res) => setUsers(res.data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
-  return loading ? 
-  (<Loading text={"Yükleniyor..."}/>) : 
-  (
+  if (loading) {
+   return <Loading text={"Yükleniyor..."} />;
+  }
+
+  if (error) {
+   return <Error message={error} />;
+  }
+
+  return (
     <FlatList
       data={users}
       keyExtractor={(item) => item.id}
