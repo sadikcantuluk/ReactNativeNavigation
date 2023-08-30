@@ -35,18 +35,30 @@ const UsersScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios("https://jsonplaceholder.typicode.com/users")
-      .then((res) => setUsers(res.data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    // axios("https://jsonplaceholder.typicode.com/users")
+    //   .then((res) => setUsers(res.data))
+    //   .catch((err) => setError(err.message))
+    //   .finally(() => setLoading(false));
+
+    getDatas();
   }, []);
 
+  const getDatas = async () => {
+    try {
+      const res = await axios("https://jsonplaceholder.typicode.com/users");
+      setUsers(res.data);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
+
   if (loading) {
-   return <Loading text={"Yükleniyor..."} />;
+    return <Loading text={"Yükleniyor..."} />;
   }
 
   if (error) {
-   return <Error message={error} />;
+    return <Error message={error} />;
   }
 
   return (

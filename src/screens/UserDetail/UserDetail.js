@@ -13,11 +13,25 @@ const UserDetail = ({ route, navigation }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios(`https://jsonplaceholder.typicode.com/users/${userId}`)
-      .then((res) => setUser(res.data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    // axios(`https://jsonplaceholder.typicode.com/users/${userId}`)
+    //   .then((res) => setUser(res.data))
+    //   .catch((err) => setError(err.message))
+    //   .finally(() => setLoading(false));
+
+    getDataDetail();
   }, [userId]);
+
+  const getDataDetail = async () => {
+    try {
+      const res = await axios(
+        `https://jsonplaceholder.typicode.com/users/${userId}`
+      );
+      setUser(res.data);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
